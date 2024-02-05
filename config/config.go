@@ -326,6 +326,7 @@ type RawConfig struct {
 	GlobalClientFingerprint string            `yaml:"global-client-fingerprint"`
 	GlobalUA                string            `yaml:"global-ua"`
 	KeepAliveInterval       int               `yaml:"keep-alive-interval"`
+	KeepAliveIdle           int               `yaml:"keep-alive-idle"`
 
 	Sniffer       RawSniffer                `yaml:"sniffer" json:"sniffer"`
 	ProxyProvider map[string]map[string]any `yaml:"proxy-providers"`
@@ -637,7 +638,12 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 	C.GeodataMode = cfg.GeodataMode
 	C.UA = cfg.GlobalUA
 	if cfg.KeepAliveInterval != 0 {
-		N.KeepAliveInterval = time.Duration(cfg.KeepAliveInterval) * time.Second
+		d := time.Duration(cfg.KeepAliveInterval) * time.Second
+		N.KeepAliveInterval = d
+		N.KeepAliveIdle = d
+	}
+	if cfg.KeepAliveIdle != 0 {
+		N.KeepAliveIdle = time.Duration(cfg.KeepAliveIdle) * time.Second
 	}
 
 	ExternalUIPath = cfg.ExternalUI

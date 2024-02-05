@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+var KeepAliveIdle = 600 * time.Second
 var KeepAliveInterval = 15 * time.Second
 
 func SplitNetworkType(s string) (string, string, error) {
@@ -48,9 +49,7 @@ func SplitHostPort(s string) (host, port string, hasPort bool, err error) {
 	return
 }
 
-func TCPKeepAlive(c net.Conn) {
-	if tcp, ok := c.(*net.TCPConn); ok {
-		_ = tcp.SetKeepAlive(true)
-		_ = tcp.SetKeepAlivePeriod(KeepAliveInterval)
-	}
+// roundDurationUp rounds d to the next multiple of to.
+func roundDurationUp(d time.Duration, to time.Duration) time.Duration {
+	return (d + to - 1) / to
 }
